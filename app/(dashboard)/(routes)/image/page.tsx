@@ -1,10 +1,11 @@
 "use client";
 import Heading from "@/components/heading";
-import { Code2, MessageSquare } from "lucide-react";
+import Image from "next/image";
+import { Code2, ImageIcon, MessageSquare,Download } from "lucide-react";
 import React, { useState } from "react";
 import { useForm} from "react-hook-form";
 import * as z from "zod";
-import { formVarification } from "./constants";
+import { formVarification, amountOptions, resolutionOptions } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -26,11 +27,13 @@ import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
+import { Select,SelectTrigger,SelectItem,SelectValue,SelectContent } from "@/components/ui/select";
+import { Card,CardFooter } from "@/components/ui/card";
 
 
-const Image = () => {
+const Images = () => {
    //const router = useRouter();
-   const [message, setMessage] = useState<ChatCompletionMessageParam[]>([]);
+   const [images,setImages] = useState<string[]>([]);
   const resolver = async (values: any) => {
     const validatedData = formVarification.parse(values);
     return { values: validatedData, errors: {} };
@@ -40,6 +43,8 @@ const Image = () => {
     resolver,
     defaultValues: {
       prompt: "",
+      amount: "1",
+      resolution: "512x512",
     },
   });
 
@@ -48,16 +53,16 @@ const Image = () => {
   const onSubmit = async (values: z.infer<typeof formVarification>) => {
 
     try {
-       const userMessage: ChatCompletionMessageParam={
-        role:"user",
-        content:values.prompt
-       };
-       const newMessages=[...message,userMessage];
-       const response = await axios.post("/api/code",{
-        messages:newMessages,
-       });
 
-       setMessage((current)=>[...current,userMessage,response.data]);
+       setImages([]);
+
+       const response = await axios.post("/api/image", values);
+
+       const urls = response.data.map((image: { url: string }) => image.url);
+
+       setImages(urls);
+
+
     } catch (error:any) {
          console.log(error);
     }
@@ -66,11 +71,11 @@ const Image = () => {
   return (
     <div>
       <Heading
-        title="Code Generation"
+        title="Image Generation"
         description="Our most advanced conversation model"
-        icon={Code2}
-        iconColor="text-green-700"
-        bgColor="bd-green-700/10"
+        icon={ImageIcon}
+        iconColor="text-pink-700"
+        bgColor="bd-pink-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>
@@ -94,15 +99,70 @@ const Image = () => {
               <FormField
                 name="prompt"
                 render={({ field }) => (
-                  <FormItem className="col-span-12 lg:col-span-10">
+                  <FormItem className="col-span-12 lg:col-span-6">
                     <FormControl className="m-0 p-0">
                       <Input
                         className=" text-black font-semibold border-0 p-1 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="Simple toggle button using react hook"
+                        placeholder="Picture of lion besides the beach"
                         {...field}
                       />
                     </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem className="text-black font-semibold col-span-12 lg:col-span-2">
+                    <Select
+                      disabled={isLoading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue defaultValue={field.value} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {amountOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="resolution"
+                render={({ field }) => (
+                  <FormItem className="text-black font-semibold col-span-12 lg:col-span-2">
+                    <Select
+                      disabled={isLoading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue defaultValue={field.value} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {resolutionOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormItem>
                 )}
               />
@@ -119,52 +179,37 @@ const Image = () => {
         </div>
         <div className="space-y-4 mt-4 rounded-md">
           {isLoading && (
-            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-black">
+            <div className="p-20 rounded-lg w-full flex items-center justify-center bg-black">
               <Loader />
             </div>
           )}
-          {message.length === 0 && !isLoading && (
+          {images.length === 0 && !isLoading && (
             <Empty label="No conversation started." />
           )}
-          {message.length !== 0 && !isLoading && (
-            <div className="flex flex-col-reverse gap-y-4 m-2">
-              {message.map((mess) => (
-                <div
-                  key={mess.content}
-                  className={cn(
-                    "p-2 w-full flex items-start gap-x-8 rounded-lg",
-                    mess.role === "user"
-                      ? "bg-gray-800 border border-black/10"
-                      : "bg-gray-700"
-                  )}
-                >
-                  {mess.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                  <ReactMarkdown
-                    components={{
-                      pre: ({ node, ...props }) => (
-                        <div className="overflow-auto w-full my-2 bg-black p-2 rounded-lg">
-                          <pre {...props} />
-                        </div>
-                      ),
-                      code: ({ node, ...props }) => (
-                        <code
-                          className="bg-black rounded-lg p-1"
-                          {...props}
-                        />
-                      ),
-                    }}
-                    className="text-sm overflow-hidden leading-7"
-                  >
-                    {mess.content || ""}
-                  </ReactMarkdown>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
+            {images.map((src) => (
+              <Card key={src} className="rounded-lg overflow-hidden">
+                <div className="relative aspect-square">
+                  <Image fill alt="Generated" src={src} />
                 </div>
-              ))}
-            </div>
-          )}
+                <CardFooter className="p-0">
+                  <Button
+                    onClick={() => window.open(src)}
+                    color="black"
+                    variant="secondary"
+                    className="w-full"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Image;
+export default Images;
