@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { ChatCompletionMessageParam } from "openai/resources/chat";
+import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 
 // import { checkSubscription } from "@/lib/subscription";
 // import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages:[instructionMessage,...messages],
+      messages: [instructionMessage, ...messages],
     });
     console.log(chatCompletion.choices[0].message);
     // if (!isPro) {

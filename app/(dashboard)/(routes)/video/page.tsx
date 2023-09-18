@@ -1,6 +1,14 @@
 "use client";
 import Heading from "@/components/heading";
-import { Code2, MessageSquare, Music2, Music2Icon, Music3, MusicIcon, VideoIcon } from "lucide-react";
+import {
+  Code2,
+  MessageSquare,
+  Music2,
+  Music2Icon,
+  Music3,
+  MusicIcon,
+  VideoIcon,
+} from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -19,7 +27,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/router";
-import { ChatCompletionMessageParam } from "openai/resources/chat";
+import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
@@ -46,13 +54,13 @@ const Video = () => {
 
   const onSubmit = async (values: z.infer<typeof formVarification>) => {
     try {
-        setVideo(undefined);
+      setVideo(undefined);
 
-        const response = await axios.post("/api/video", values);
-        console.log(response);
+      const response = await axios.post("/api/video", values);
+      console.log(response);
 
-        setVideo(response.data[0]);
-        form.reset();
+      setVideo(response.data[0]);
+      form.reset();
     } catch (error: any) {
       console.log(error);
     }
@@ -122,9 +130,9 @@ const Video = () => {
           {video && !isLoading && (
             <video
               controls
-              className="w-full aspect-video mt-8 rounded-lg border bg-black">
+              className="w-full aspect-video mt-8 rounded-lg border bg-black"
+            >
               <source src={video} />
-              
             </video>
           )}
         </div>

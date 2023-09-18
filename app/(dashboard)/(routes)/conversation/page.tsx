@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/router";
-import { ChatCompletionMessageParam } from "openai/resources/chat";
+import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";

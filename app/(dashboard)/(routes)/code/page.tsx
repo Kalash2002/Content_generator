@@ -19,13 +19,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/router";
-import { ChatCompletionMessageParam } from "openai/resources/chat";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
+import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 
 const Code = () => {
   //const router = useRouter();

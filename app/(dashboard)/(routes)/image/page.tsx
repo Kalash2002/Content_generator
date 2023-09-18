@@ -1,11 +1,15 @@
 "use client";
 import Heading from "@/components/heading";
 import Image from "next/image";
-import { Code2, ImageIcon, MessageSquare,Download } from "lucide-react";
+import { Code2, ImageIcon, MessageSquare, Download } from "lucide-react";
 import React, { useState } from "react";
-import { useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { formVarification, amountOptions, resolutionOptions } from "./constants";
+import {
+  formVarification,
+  amountOptions,
+  resolutionOptions,
+} from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -20,20 +24,25 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/router";
-import { ChatCompletionMessageParam } from "openai/resources/chat";
+import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
-import { Select,SelectTrigger,SelectItem,SelectValue,SelectContent } from "@/components/ui/select";
-import { Card,CardFooter } from "@/components/ui/card";
-
+import {
+  Select,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+  SelectContent,
+} from "@/components/ui/select";
+import { Card, CardFooter } from "@/components/ui/card";
 
 const Images = () => {
-   //const router = useRouter();
-   const [images,setImages] = useState<string[]>([]);
+  //const router = useRouter();
+  const [images, setImages] = useState<string[]>([]);
   const resolver = async (values: any) => {
     const validatedData = formVarification.parse(values);
     return { values: validatedData, errors: {} };
@@ -51,20 +60,16 @@ const Images = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formVarification>) => {
-
     try {
+      setImages([]);
 
-       setImages([]);
+      const response = await axios.post("/api/image", values);
 
-       const response = await axios.post("/api/image", values);
+      const urls = response.data.map((image: { url: string }) => image.url);
 
-       const urls = response.data.map((image: { url: string }) => image.url);
-
-       setImages(urls);
-
-
-    } catch (error:any) {
-         console.log(error);
+      setImages(urls);
+    } catch (error: any) {
+      console.log(error);
     }
   };
 

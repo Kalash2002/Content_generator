@@ -1,6 +1,13 @@
 "use client";
 import Heading from "@/components/heading";
-import { Code2, MessageSquare, Music2, Music2Icon, Music3, MusicIcon } from "lucide-react";
+import {
+  Code2,
+  MessageSquare,
+  Music2,
+  Music2Icon,
+  Music3,
+  MusicIcon,
+} from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -19,7 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/router";
-import { ChatCompletionMessageParam } from "openai/resources/chat";
+import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
@@ -46,13 +53,13 @@ const Music = () => {
 
   const onSubmit = async (values: z.infer<typeof formVarification>) => {
     try {
-        setMusic(undefined);
+      setMusic(undefined);
 
-        const response = await axios.post("/api/music", values);
-        console.log(response);
+      const response = await axios.post("/api/music", values);
+      console.log(response);
 
-        setMusic(response.data.audio);
-        form.reset();
+      setMusic(response.data.audio);
+      form.reset();
     } catch (error: any) {
       console.log(error);
     }
