@@ -9,7 +9,7 @@ import { ToasterProvider } from "@/components/toaster-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Content Box",
+  title: "Spectra",
   description: "Generate Content Using AI",
 };
 

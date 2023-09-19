@@ -85,7 +85,7 @@ const routes = [
             <Image fill alt="logo" src="/logo.png" />
           </div>
           <h1 className={cn("text-xl font-bold", montserrat.className)}>
-            Content Box
+            Spectra
           </h1>
         </Link>
         <div className="space-y-1">
