@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
@@ -35,7 +35,7 @@ import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 
 const Music = () => {
-  //const router = useRouter();
+  const router = useRouter();
   const [music, setMusic] = useState<string>();
   const resolver = async (values: any) => {
     const validatedData = formVarification.parse(values);
@@ -62,6 +62,8 @@ const Music = () => {
       form.reset();
     } catch (error: any) {
       console.log(error);
+    } finally {
+      router.refresh();
     }
   };
 

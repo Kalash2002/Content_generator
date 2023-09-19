@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
@@ -41,7 +41,7 @@ import {
 import { Card, CardFooter } from "@/components/ui/card";
 
 const Images = () => {
-  //const router = useRouter();
+  const router = useRouter();
   const [images, setImages] = useState<string[]>([]);
   const resolver = async (values: any) => {
     const validatedData = formVarification.parse(values);
@@ -70,6 +70,8 @@ const Images = () => {
       setImages(urls);
     } catch (error: any) {
       console.log(error);
+    } finally {
+      router.refresh();
     }
   };
 

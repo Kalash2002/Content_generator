@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
@@ -28,7 +28,7 @@ import ReactMarkdown from "react-markdown";
 import { ChatCompletionMessageParam } from "openai/resources/chat/index.mjs";
 
 const Code = () => {
-  //const router = useRouter();
+  const router = useRouter();
   const [message, setMessage] = useState<ChatCompletionMessageParam[]>([]);
   const resolver = async (values: any) => {
     const validatedData = formVarification.parse(values);
@@ -59,6 +59,8 @@ const Code = () => {
       setMessage((current) => [...current, userMessage, response.data]);
     } catch (error: any) {
       console.log(error);
+    } finally {
+      router.refresh();
     }
   };
 

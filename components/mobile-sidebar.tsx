@@ -12,7 +12,13 @@ import {
 import Sidebar from "@/components/sidebar"
 import { useEffect, useState } from "react";
 
-const MobileSidebar = () => {
+ const MobileSidebar = ({
+  apiLimitCount = 0,
+  isPro = false
+}: {
+  apiLimitCount: number;
+  isPro: boolean;
+}) => {
    const [isMounted,setIsMounted] = useState(false);
 
    useEffect(()=>{
@@ -24,19 +30,19 @@ const MobileSidebar = () => {
    }
 
     return (
-    <div>
-      <Sheet>
-        <SheetTrigger>
-          <Button variant={"ghost"} size={"icon"} className="md:hidden">
-            <Menu />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side={"left"} className="p-0">
-            <Sidebar/>
-        </SheetContent>
-      </Sheet>
-    </div>
-  );
+      <div>
+        <Sheet>
+          <SheetTrigger>
+            <Button variant={"ghost"} size={"icon"} className="md:hidden">
+              <Menu />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side={"left"} className="p-0">
+            <Sidebar isPro={isPro} apiLimitCount={apiLimitCount} />
+          </SheetContent>
+        </Sheet>
+      </div>
+    );
 };
 
 export default MobileSidebar;
